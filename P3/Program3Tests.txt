@@ -1,0 +1,230 @@
+liveuser@localhost-live:~/Desktop/P3test$ ls -l
+total 16
+-rw-r--r--. 1 liveuser liveuser 63 Mar 18 13:23 another.txt
+-rw-r--r--. 2 liveuser liveuser 50 Mar 18 13:23 base.txt
+-rw-r--r--. 1 liveuser liveuser 70 Mar 18 13:23 extra.txt
+-rw-r--r--. 2 liveuser liveuser 50 Mar 18 13:23 hard
+lrwxrwxrwx. 1 liveuser liveuser  8 Mar 20 16:09 soft -> base.txt
+
+
+1) With debug to show each file as it is processed, word "this" is included in all 3 .txt files
+liveuser@localhost-live:~/Desktop/P3$ ./sniff this -d -i ../P3test
+
+---------------------------------------------------------------
+	Tim Fraedrich & Andrew Haller
+	CSCI 4547
+	Wed Mar 20 2024	16:34:10
+---------------------------------------------------------------
+
+usage: arguments, options [-dvR] [-i filename] [-o filename]
+
+Command: 	./sniff -d -i ../P3test this 
+Debug: 		True
+Verbose: 	False
+Recursive: 	False
+Input: 		True, arg: ../P3test
+Output: 	False
+Words: 		this 
+
+cwd: ../P3test
+
+Starting another.txt
+File name: 	another.txt
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	46186
+Words found: 	this 
+Done processing another.txt
+
+Starting ..
+Discarded
+
+Starting base.txt
+File name: 	base.txt
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	46775
+Words found: 	this 
+Done processing base.txt
+
+Starting .
+Discarded
+
+Starting soft
+Discarded
+
+Starting hard
+File name: 	hard
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	46775
+Words found: 	this 
+Done processing hard
+
+Starting extra.txt
+File name: 	extra.txt
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	43277
+Words found: 	this 
+Done processing extra.txt
+
+Sniffed Files:
+File name: 	another.txt
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	46186
+Words found: 	this 
+
+File name: 	base.txt
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	46775
+Words found: 	this 
+
+File name: 	hard
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	46775
+Words found: 	this 
+
+File name: 	extra.txt
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	43277
+Words found: 	this 
+
+
+---------------------------------------------------------------
+Normal termination.
+
+2) With verbose to show file names, word "file" does not appear in extra
+liveuser@localhost-live:~/Desktop/P3$ ./sniff file -v -i ../P3test
+
+---------------------------------------------------------------
+	Tim Fraedrich & Andrew Haller
+	CSCI 4547
+	Wed Mar 20 2024	16:37:45
+---------------------------------------------------------------
+
+Command: 	./sniff -v -i ../P3test file 
+Debug: 		False
+Verbose: 	True
+Recursive: 	False
+Input: 		True, arg: ../P3test
+Output: 	False
+Words: 		file 
+
+cwd: ../P3test
+Directory read: another.txt
+Directory read: base.txt
+Directory read: hard
+Directory read: extra.txt
+
+File name: 	another.txt
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	46186
+Words found: 	file 
+
+File name: 	base.txt
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	46775
+Words found: 	file 
+
+File name: 	hard
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	46775
+Words found: 	file 
+
+
+---------------------------------------------------------------
+Normal termination.
+
+3) Sniffing multiple words at once, "the" only appears in base (and therefore also hard cause it is hard linked to base), and "final" is only in extra.txt
+liveuser@localhost-live:~/Desktop/P3$ ./sniff the final -i ../P3test
+
+---------------------------------------------------------------
+	Tim Fraedrich & Andrew Haller
+	CSCI 4547
+	Wed Mar 20 2024	16:43:22
+---------------------------------------------------------------
+
+Command: 	./sniff -i ../P3test the final 
+Debug: 		False
+Verbose: 	False
+Recursive: 	False
+Input: 		True, arg: ../P3test
+Output: 	False
+Words: 		the final 
+
+cwd: ../P3test
+File name: 	base.txt
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	46775
+Words found: 	the 
+
+File name: 	hard
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	46775
+Words found: 	the 
+
+File name: 	extra.txt
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	45886
+Words found: 	final 
+
+
+---------------------------------------------------------------
+Normal termination.
+
+4) Sniffing 5 words
+liveuser@localhost-live:~/Desktop/P3$ ./sniff the final another test sniff -i ../P3test
+
+---------------------------------------------------------------
+	Tim Fraedrich & Andrew Haller
+	CSCI 4547
+	Wed Mar 20 2024	16:50:09
+---------------------------------------------------------------
+
+Command: 	./sniff -i ../P3test the final another test sniff 
+Debug: 		False
+Verbose: 	False
+Recursive: 	False
+Input: 		True, arg: ../P3test
+Output: 	False
+Words: 		the final another test sniff 
+
+cwd: ../P3test
+File name: 	another.txt
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	46546
+Words found: 	another 
+
+File name: 	base.txt
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	46775
+Words found: 	the test sniff 
+
+File name: 	hard
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	46775
+Words found: 	the test sniff 
+
+File name: 	extra.txt
+Pathname: 	../P3test
+Type: 		Regular File
+iNode number: 	45886
+Words found: 	final sniff 
+
+
+---------------------------------------------------------------
+Normal termination.
