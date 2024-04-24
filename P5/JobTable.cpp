@@ -1,15 +1,13 @@
 #include "JobTable.hpp"
 
-using namespace std;
-
 JobTable::JobTable() {
   pthread_mutex_init(&mutex, NULL);
 }
 
-static void* JobTable::kidMain(void* inputKid) {
+void* JobTable::kidMain(void* inputKid) {
   //run input kid's main
   Kid* kid = (Kid*)inputKid;
-  kid*.run();
+  kid->run();
 }
 
 void JobTable::setMutexLock(bool input) {

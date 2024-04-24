@@ -1,7 +1,5 @@
 #include "Kid.hpp"
 
-using namespace std;
-
 Kid::Kid(string inputName, JobTable* inputTable) {
   //sets inputs
   name = inputName;
@@ -27,22 +25,22 @@ void Kid::run() {
   for (;;) {
     if (sig == SIGUSR1) {
       //select job
-      jobTable.setMutexLock(true);
+      jobTable->setMutexLock(true);
       
-      int jobToSelect = selectJob()
-      jobTable.table[jobToSelect].chooseJob(name, ++jobTable.jobsBegan);
-      currentJob = jobTable.table[jobToSelect];
+      int jobToSelect = selectJob();
+      jobTable->table[jobToSelect].chooseJob(name, ++jobTable->jobsBegan);
+      currentJob = jobTable->table[jobToSelect];
       
-      jobTable.setMutexLock(false);
+      jobTable->setMutexLock(false);
       
       //do job, then announce done
       currentJob.doJob();
       currentJob.announceDone();
-      myCompetedJobs.push_back(currentJob);
+      myCompletedJobs.push_back(currentJob);
     }
     else if (sig == SIGQUIT) { //MIGHT NEED REWORK, DOESNT USE JOBTABLE BOOL
       //quit work look
-      jobTable.quitFlag = true;
+      jobTable->quitFlag = true;
       cout << "quit signal received" << endl;
       break;
     }
@@ -61,33 +59,33 @@ int Kid::selectJob() {
   int valueCompare = 0;
   //loop through all jobs on table
   for (int i = 0; i < 10; ++i) {
-    switch (mood) {
+    switch (myMood) {
       case LAZY:
         //find easiest job
-        if (jobTable.table[i].e < comparator) {
+        if (jobTable->table[i].e < comparator) {
           jobToSelect = i;
-          comparator = jobTable.table[i].e;
+          comparator = jobTable->table[i].e;
         }
         break;
       case PRISSY:
         //find most pleasant job
-        if (jobTable.table[i].p < comparator) {
+        if (jobTable->table[i].p < comparator) {
           jobToSelect = i;
-          comparator = jobTable.table[i].p;
+          comparator = jobTable->table[i].p;
         }
         break;
       case OVER_TIRED:
         //find shortest job
-        if (jobTable.table[i].q < comparator) {
+        if (jobTable->table[i].q < comparator) {
           jobToSelect = i;
-          comparator = jobTable.table[i].q;
+          comparator = jobTable->table[i].q;
         }
         break;
       case GREEDY:
         //find job with highest value
-        if (jobTable.table[i].value > valueCompare) {
+        if (jobTable->table[i].value > valueCompare) {
            jobToSelect = i;
-          valueCompare = jobTable.table[i].e;
+          valueCompare = jobTable->table[i].e;
         }
         break;
       case COOPERATIVE:
@@ -115,7 +113,7 @@ void Kid::print(ostream& out) {
     default: out << "THIS DIDN'T WORK";
   }
   out << ", and I have completed " << completedJobsCount << " jobs, earning $" << earnings << endl;
-  for (int i = 0; i < myCompetedJobs.Count; ++i) {
-    myCompetedJobs[i].print(out);
+  for (int i = 0; i < myCompletedJobs.size(); ++i) {
+    myCompletedJobs[i].print(out);
   }
 }

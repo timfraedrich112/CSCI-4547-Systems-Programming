@@ -19,7 +19,7 @@ void Job::doJob() {
 }
 
 void Job::announceDone() {
-  status = COMPLETED;
+  status = COMPLETE;
 }
 
 void Job::print(ostream& out) {
@@ -37,4 +37,5 @@ void Job::print(ostream& out) {
       break;
     case COMPLETE:    out << "completed" << endl;
   }
+  out << "-------" << endl;
 }

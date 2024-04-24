@@ -10,7 +10,6 @@ using namespace std;
 
 class Kid {
   private:
-    Mood myMood;
     Job currentJob;
     JobTable* jobTable;
     int completedJobsCount = 0;
@@ -20,8 +19,9 @@ class Kid {
   public:
     string name;
     int earnings = 0;
-    vector<Job> myCompetedJobs;
+    vector<Job> myCompletedJobs;
     enum Mood { LAZY, PRISSY, OVER_TIRED, GREEDY, COOPERATIVE }; 
+    Mood myMood;
     Kid() = default;
     Kid(string inputName, JobTable* inputTable);
     ~Kid() = default;

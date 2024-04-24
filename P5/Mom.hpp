@@ -16,7 +16,7 @@ class Mom {
     
     //kids
     Kid kids[4];
-    const string kidNames[4] = {"Angela", "Bobby", "Carla", "Dave"};
+    string kidNames[4] = {"Angela", "Bobby", "Carla", "Dave"};
     pthread_t kidThreads[4];
     int highestEarner;
   public:

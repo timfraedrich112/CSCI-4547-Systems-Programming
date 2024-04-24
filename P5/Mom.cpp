@@ -1,7 +1,5 @@
 #include "Mom.hpp"
 
-using namespace std;
-
 Mom::Mom() {
   cout << "Mom says it's time to work!" << endl;
 }
@@ -11,10 +9,9 @@ void Mom::run() {
   initializeJobTable();
   //create kids and their threads
   for (int i = 0; i < 4; ++i) {
-    Kid newKid = new Kid(kidNames[i], *jobTable);
-    kids.push_back(newKid);
+    Kid newKid(kidNames[i], jobTable);
+    kids[i] = newKid;
     pthread_create(&kidThreads[i], NULL, JobTable::kidMain, (void*) &kids[i]);
-    kidTIDs[i] = i;
   }
   
   //send start signals
@@ -33,13 +30,13 @@ void Mom::run() {
   
   //send quit signals, then join threads
   for (int i = 0; i < 4; ++i) { pthread_kill(kidThreads[i], SIGQUIT); }
-  for (int i = 0; i < 4; ++i) { pthread_join(kidTIDs[i], SIGQUIT); }
+  for (int i = 0; i < 4; ++i) { pthread_join(kidThreads[i], NULL); }
   
   //when all kids joined, use completed jobs vector to find how much each kid earned, and pay highest extra $5
   int highestEarnings = 0;
   for (int i = 0; i < 4; ++i) {
-    for (int j = 0; i < kids[i].myCompletedJobs.Count; ++j) {
-      kids[i].pay(myCompletedJobs[j].value);
+    for (int j = 0; i < kids[i].myCompletedJobs.size(); ++j) {
+      kids[i].pay(kids[i].myCompletedJobs[j].value);
     }
     if (kids[i].earnings > highestEarnings) {
       highestEarner = i;
@@ -53,34 +50,37 @@ void Mom::run() {
 }
 
 void Mom::initializeJobTable() {
-  jobTable = new *JobTable();
-  jobTable.setMutexLock(true);
+  jobTable = new JobTable();
+  jobTable->setMutexLock(true);
   
   //create 10 jobs to fill the table
   for (int i = 0; i < 10; ++i) {
-    Job newJob = new Job();
-    jobTable.table.push_back(newJob);
-    table.jobCount++;
+    Job newJob;
+    jobTable->table.push_back(newJob);
+    jobTable->jobCount++;
   }
   
-  jobTable.setMutexLock(false);
+  jobTable->setMutexLock(false);
 }
 
 void Mom::findCompletedJobs() {
-  jobTable.setMutexLock(true);
+  jobTable->setMutexLock(true);
   
-  //through whole table, if completed job is found, remove it and make a new job
+  //through whole table, if completed job is found
   for (int i = 0; i < 10; ++i) {
-    if (jobTable.table[i].status == Job::JobStatus.COMPLETE) {
-      completedJobs.push_back(jobTable.table[i]);
-      jobTable.remove(jobTable.table[i]);
-      Job newJob = new Job();
-      jobTable.table.push_back(newJob);
-      table.jobCount++;
+    if (jobTable->table[i].status == Job::JobStatus::COMPLETE) {
+      //add to completed list and remove from table
+      completedJobs.push_back(jobTable->table[i]);
+      jobTable->table.erase(jobTable->table.begin() + i);
+
+      //add new job
+      Job newJob;
+      jobTable->table.push_back(newJob);
+      jobTable->jobCount++;
     }
   }
   
-  jobTable.setMutexLock(false);
+  jobTable->setMutexLock(false);
 }
 
 void Mom::print(ostream& out) {
@@ -89,7 +89,7 @@ void Mom::print(ostream& out) {
   out << "The highest earner is " << kids[highestEarner].name << endl;
   out << "-----------------------------" << endl;
   out << "All jobs completed: " << endl;
-  for (int i = 0; i < completedJobs.Count; ++i) {
+  for (int i = 0; i < completedJobs.size(); ++i) {
     completedJobs[i].print(out);
   }
 }

@@ -12,11 +12,11 @@ class Job {
   private:
     int jobNumber;
     string kidName;
-    JobStatus status;
   public:
     short int q, p, e;
     int value;
     enum JobStatus { NOT_STARTED, WORKING, COMPLETE };
+    JobStatus status;
     Job() = default;
     ~Job() = default;
     void chooseJob(string inputKidName, int inputJobNumber);
