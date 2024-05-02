@@ -1,4 +1,5 @@
 #include "Kid.hpp"
+#include <signal.h>
 
 Kid::Kid(string inputName, JobTable* inputTable) {
   //sets inputs
